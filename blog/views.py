@@ -12,11 +12,11 @@ def home(request):
 
 def posts(request):
     posts = Post.objects.all()
-    return render(request, 'tasks.html', {'post': posts})
+    return render(request, 'blog/posts.html', {'post': posts})
 
 def create_author(request):
     if request.method == 'GET':
-        return render(request, 'create_author.html', {'form': AuthorForm})
+        return render(request, 'blog/create_author.html', {'form': AuthorForm})
     else:
         form = AuthorForm(request.POST)
         if form.is_valid():
@@ -27,7 +27,7 @@ def update_author(request, user_id):
     author = Author.objects.get(id=user_id)
     if request.method == 'GET':
         form = AuthorForm(instance=author)
-        return render(request, 'create_author.html', {'form': form})
+        return render(request, 'blog/create_author.html', {'form': form})
     else:
         form = AuthorForm(request.POST, instance=author)
         if form.is_valid():
