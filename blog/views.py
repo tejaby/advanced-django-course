@@ -6,9 +6,13 @@ from .forms import AuthorForm
 
 # Create your views here.
 
-def index(request):
+def home(request):
+    if request.method == 'GET':
+        return render(request, 'index.html')
+
+def posts(request):
     posts = Post.objects.all()
-    return render(request, 'index.html', {'post': posts})
+    return render(request, 'tasks.html', {'post': posts})
 
 def create_author(request):
     if request.method == 'GET':
