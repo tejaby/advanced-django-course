@@ -6,8 +6,12 @@
     <title>Document</title>
 </head>
 <body>
-    {% for post in object_list  %}
-    <p>{{post.title}}</p>
+    {% for user in object_list  %}
+        <li>
+            <ul>{{user.id}}</ul>
+            <ul>{{user.username}}</ul>
+            <ul>{{user.password}}</ul>
+        </li>
     {% endfor %}
 </body>
 </html>
