@@ -1,7 +1,8 @@
-from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import View, TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.shortcuts import redirect
+from django.views.generic import View, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Post, User
 
@@ -40,25 +41,16 @@ class UserDeleteView(DeleteView):
         object.save()
         return redirect('list_user')
 
-# def create_user(request):
-#     if request.method == 'POST':
-#         fomr_user = UserForm(request.POST)
-#         if fomr_user.is_valid():
-#             fomr_user.save()
-#         return redirect('home')
-#     else:
-#         return render(request, 'post/create_user.html', {'form': UserForm})
-    
-# def update_user(request, user_id):
-#     try:
-#         user = get_object_or_404(User, id=user_id)
-#     except User.DoesNotExist:
-#         return HttpResponse("user not found", status=404)
-#     if request.method == 'POST':
-#         form_user = UserForm(request.POST, initial=user)
-#         if form_user.is_valid():
-#             form_user.save()
-#         return redirect('home')
-#     else:
-#         form = UserForm(instance=user)
-#         return render(request, 'post/create_user.html', {'form': form})
+class SigninView(FormView):
+    template_name = 'post/signin.html'
+    form_class = AuthenticationForm
+    success_url = reverse_lazy('list_user')
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(self.request, username=username, password=password)
+        if user is not None:
+            login(self.request, user)
+            return redirect('list_user')
+        return self.render_to_response(self.get_context_data(form=form, error='Username or password is incorrect'))
